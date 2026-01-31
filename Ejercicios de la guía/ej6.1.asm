@@ -1,8 +1,10 @@
 
 ; 6) Cargar un vector por teclado, con 10 elementos e imprimir por pantalla los valores
 ; ingresados, separados por comas.
+;
+; Aclaración: Voy a suponer que es un vector de números.
 
-name "ejercicio_6"
+name "ejercicio_6_num"
 
 org 100h
 
