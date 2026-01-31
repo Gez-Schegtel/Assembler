@@ -92,7 +92,7 @@ msj_valores db 13, 10, "Valores que cumplen las condición: $"
 ; 1   = 00000001 (Bit 0 en 1) -> NO CUMPLE
 vector_datos dw 4, 255, 64, 1, 8, 12, 51, 100, 0, 32
 
-vector_condicion 10 dw dup(?)
+vector_condicion dw 10 dup(?)
 
 ; La máscara. La declaramos en binario.
 mascara dw 00110011b
