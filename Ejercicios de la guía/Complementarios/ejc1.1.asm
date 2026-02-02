@@ -93,8 +93,8 @@ fin:
 msj_input1     db "Número 1: $"
 msj_input2     db 13, 10, "Número 2: $"
 msj_output     db 13, 10, "El número mayor es: $"
-msj_esmul      db 13, 10, "El número mayor es múltiplo del menor.$"
-msj_noesmul    db 13, 10, "El número mayor no es múltilpo del menor.$"
+msj_esmul      db 13, 10, "El número es múltiplo.$"
+msj_noesmul    db 13, 10, "El número no es múltiplo.$"
 msj_iguales    db 13, 10, "Los números son iguales.$"
 
 num1 db ?
