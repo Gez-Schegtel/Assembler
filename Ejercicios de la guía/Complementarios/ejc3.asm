@@ -26,7 +26,7 @@ putc 10
 
 mov ah, 09h
 mov dx, offset msj_input2
-int 21h    
+int 21h
 putc 13
 putc 10
 
@@ -39,19 +39,21 @@ cmp op, 1
 je suma
 
 cmp op, 2
-je resta        
+je resta
 
 cmp op, 3
 je multiplicacion
 
 cmp op, 4
-je division 
+je division
+
+jmp opcion_invalida
 
 suma:
-    mov ah, 09h 
+    mov ah, 09h
     mov dx, offset msj_sum
     int 21h
-    mov ax, num1 
+    mov ax, num1
     add ax, num2 ;el resultado ya queda en ax 
     call PRINT_NUM
     jmp fin_programa
@@ -59,13 +61,13 @@ suma:
 resta: 
     mov ah, 09h
     mov dx, offset msj_res
-    int 21h 
+    int 21h
     mov ax, num1
     sub ax,num2
     call PRINT_NUM
-    jmp fin_programa     
+    jmp fin_programa
 
-multiplicacion: 
+multiplicacion:
     mov ah, 09h
     mov dx, offset msj_mul
     int 21h
@@ -74,32 +76,48 @@ multiplicacion:
     call PRINT_NUM
     jmp fin_programa
 
-division: 
+division:
+    cmp num2, 0
+    je divisor_cero
+
     xor dx, dx
     mov ax, num1
     div num2
     mov res, dx
     mov coc, ax
-    
+
     mov ah, 09h
     mov dx, offset msj_div_res
     int 21h
     mov ax, res
-    call PRINT_NUM ;la funcion PRINT_NUM lee en ax   
-    
+    call PRINT_NUM ;la funcion PRINT_NUM lee en ax
+
     putc 13
     putc 10
-    
+
     mov ah, 09h
     mov dx, offset msj_div_coc
     int 21h
-    mov ax, coc 
+    mov ax, coc
     call PRINT_NUM
+
     putc 13
     putc 10
-     
 
-fin_programa: 
+    jmp fin_programa
+
+opcion_invalida:
+    mov ah, 09h
+    mov dx, offset msj_opcion_invalida
+    int 21h
+    jmp fin_programa
+
+divisor_cero:
+    mov ah, 09h
+    mov dx, offset msj_divisor_cero
+    int 21h
+
+fin_programa:
     mov ah, 4ch
     int 21h
 
@@ -110,7 +128,9 @@ msj_res db "El resultado de la resta es: $"
 msj_mul db "El resultado de la multiplicacion es: $"
 msj_div_res db "El resto de la division es: $"
 msj_div_coc db "El cociente de la division es: $"
-  
+msj_opcion_invalida db "La opción seleccionada no es la correcta. Terminando el programa... $"
+msj_divisor_cero db "¡No se puede dividir por cero! $"
+
 num1 dw ?
 num2 dw ?
 op dw ?
