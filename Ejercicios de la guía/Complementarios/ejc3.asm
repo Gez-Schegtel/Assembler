@@ -2,7 +2,7 @@
 ; Realizar un programa que funcione como calculadora de 2 numeros enteros, y
 ; permita realizar las 4 operaciones basicas. Se debe ingresar por teclado los
 ; numeros y la operacion a realizar. Luego imprimir por pantalla el resultado
-; obtenido.                                           
+; obtenido.
 
 name "comp3"
 org 100h
@@ -140,7 +140,5 @@ coc dw ?
 DEFINE_SCAN_NUM
 DEFINE_PRINT_NUM
 DEFINE_PRINT_NUM_UNS 
-
-
 
 END
