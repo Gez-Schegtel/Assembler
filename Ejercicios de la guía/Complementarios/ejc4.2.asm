@@ -64,17 +64,27 @@ mov si, offset vector_entrada
 mov cx, 10
 call RUTINA_IMPRIMIR
 
-mov ah, 09h
-mov dx, offset msj_vector_copia
-int 21h
+cmp bx, 0
+jne hubo_pares
 
-mov si, offset vector_copia
-mov cx, bx
-call RUTINA_IMPRIMIR
+mov ah, 09h
+mov dx, offset msj_no_hubo_pares
+int 21h
+jmp fin_programa
+
+hubo_pares: 
+  mov ah, 09h
+  mov dx, offset msj_vector_copia
+  int 21h
+
+  mov si, offset vector_copia
+  mov cx, bx
+  call RUTINA_IMPRIMIR
 
 ; Fin de la ejecución.
-mov ah, 4ch
-int 21h
+fin_programa:
+  mov ah, 4ch
+  int 21h
 
 RUTINA_IMPRIMIR PROC
 ; Tener listo cx y si para llamar a la rutina.
@@ -91,8 +101,9 @@ ret
 RUTINA_IMPRIMIR ENDP
 
 msj_ingreso_datos db "Ingrese 10 elementos que conformarán al vector: ", 13, 10, "$"
-msj_vector_entrada db 13, 13, "El vector de entrada es: $"
+msj_vector_entrada db 13, 10, "El vector de entrada es: $"
 msj_vector_copia db 13, 10, "El vector copia es: $"
+msj_no_hubo_pares db 13, 10, "No se encontraron números pares en el vector. $"
 
 vector_entrada dw 10 dup(?)
 vector_copia dw 10 dup(?)
