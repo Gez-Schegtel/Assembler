@@ -40,7 +40,6 @@ msg2 db "El texto que ingreso fue: $"
 
 mi_texto db 100 dup(?)  ; Reservamos 100 bytes vacíos para el texto
 
-
 ; ==========================================================
 ; 🛠️ RUTINA: LEER_CADENA
 ; Función: Lee texto carácter por carácter hasta pulsar Enter.
@@ -75,7 +74,6 @@ fin_leer_cadena:
   pop ax
   ret
 LEER_CADENA ENDP
-
 
 ; ==========================================================
 ; 🛠️ RUTINA: SALTO_DE_LINEA
