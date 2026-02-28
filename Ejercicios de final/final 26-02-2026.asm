@@ -19,9 +19,6 @@ int 21h
 
 mov cx, 8
 ingresar_notas:
-  cmp cx, 0
-  je fin_ingreso
-
   mov ah, 01h
   int 21h
 
