@@ -30,7 +30,7 @@ ingresar_notas:
   add promedio_curso, al
 
   cmp al, 6
-  jbe no_cuento_aprobados
+  jb no_cuento_aprobados
 
   inc total_aprobados
 
