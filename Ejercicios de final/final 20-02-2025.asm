@@ -1,6 +1,6 @@
 
-; Realizar un programa Assembler 8086 que permita ingresar por teclado 10 caracteres y 
-; separe en dos vectores. Colocar en un vector los dígitos y en otro vector, el resto de los caracteres. 
+; Realizar un programa Assembler 8086 que permita ingresar por teclado 10 caracteres y
+; separe en dos vectores. Colocar en un vector los dígitos y en otro vector, el resto de los caracteres.
 ; Al finalizar deberá imprimir el vector de números.
 ; Se solicita: codificar el programa en lenguaje Assembler para el 8086.
 
