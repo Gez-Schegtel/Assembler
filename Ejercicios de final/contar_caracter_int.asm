@@ -2,98 +2,142 @@
 ; Realizar programa Assembler 8086 que permita el ingreso de un carácter y una cadena de caracteres tipeadas 
 ; por pantalla. Al presionar ENTER deberá indicar la cantidad de coincidencias de dicho carácter en la misma. 
 
-name "contador_manual"
+name "contar caracteres con interrupciones"
 org 100h
 
-start:
-    ; --- 1. PEDIR CADENA (Lógica Manual) ---   
-    ; --- 1.1 Mostrar msg_cadena por pantalla ---
-    mov ah, 09h
-    mov dx, offset msg_cadena
+mov ah, 09h
+mov dx, offset msj_ingreso_cadena
+int 21h
+
+call SALTO_LINEA
+call SALTO_LINEA
+
+mov di, offset cadena
+mov cx, 255
+
+ingresar_cadena:
+  mov ah, 01h
+  int 21h
+
+  cmp al, 13
+  je fin_carga
+
+  mov [di], al
+  inc di
+
+  loop ingresar_cadena
+
+fin_carga:
+  mov [di], "$"
+
+mov si, offset cadena
+cmp [si], "$"
+je no_cargo_nada
+
+call SALTO_LINEA
+call SALTO_LINEA
+
+mov ah, 09h
+mov dx, offset msj_ingreso_caracter
+int 21h
+
+mov ah, 01h
+int 21h
+
+call SALTO_LINEA
+
+xor bx, bx
+
+coincidencias:
+  cmp [si], "$"
+  je fin_coincidencias
+
+  cmp al, [si]
+  jne no_cuento_coincidencia
+
+  inc bx
+
+no_cuento_coincidencia:
+  inc si
+  jmp coincidencias
+
+fin_coincidencias:
+
+mov ah, 09h
+mov dx, offset msj_coincidencias
+int 21h
+
+mov ax, bx
+call ESCRIBIR_NUM
+
+jmp fin_programa
+
+no_cargo_nada:
+  mov ah, 09h
+  mov dx, offset msj_error
+  int 21h
+
+fin_programa:
+mov ah, 4ch
+int 21h
+
+msj_ingreso_cadena db "Ingrese una cadena de alfanumérica de hasta 255 caracteres... $"
+msj_ingreso_caracter db "Ingrese un caracter del que desee buscar el número de coincidencias: $"
+msj_coincidencias db "Número de coincidencias del caracter en la cadena: $"
+msj_error db "No cargaste nada >:-($"
+
+cadena db 256 dup(?) ; 255 caracteres de entrada + el centinela $.
+
+ESCRIBIR_NUM PROC
+  ; Para que esta rutina funcione, antes de llamarla hay que tener el número que se quiere mostrar por pantalla cargado en el registro AX.
+
+  push ax
+  push bx
+  push cx
+  push dx
+
+  xor cx, cx
+  mov bx, 10
+
+  descomponer_numero:
+    xor dx, dx
+    div bx
+
+    push dx
+
+    inc cx
+
+    cmp ax, 0
+    jne descomponer_numero
+
+  mostrar_numero:
+    pop dx
+    add dx, 30h
+
+    mov ah, 02h
     int 21h
 
-    ; --- 1.2 Preparamos DI (Destination Index) al inicio del buffer vacío para guardar lo que ingrese el usuario ---
-    mov di, offset buffer
+    loop mostrar_numero
 
-leer_bucle:
-    mov ah, 01h      ; Leer tecla
-    int 21h
-    
-    cmp al, 13       ; ¿Es Enter?
-    je fin_lectura
-    
-    mov [di], al     ; Guardar en memoria
-    inc di           ; Avanzar puntero
-    jmp leer_bucle   ; Repetir
+  pop dx
+  pop cx
+  pop bx
+  pop ax
 
-fin_lectura:
-    mov [di], '$'    ; IMPORTANTE: Terminador '$' para DOS
+  ret
+ESCRIBIR_NUM ENDP
 
-    call salto_linea ; Bajamos renglón estéticamente
-
-    ; --- 2. PEDIR LETRA ---
-    mov ah, 09h
-    mov dx, offset msg_letra
-    int 21h
-    
-    ; --- 2.1 Leemos el caracter que ingrese el usuario. Queda guardado en AL ---
-    mov ah, 01h      ; Leer 1 caracter
-    int 21h
-    mov bl, al       ; Guardamos la letra buscada en BL. Esto es una buena práctica porque AX es volátil.
-
-    call salto_linea
-
-    ; --- 3. CONTAR APARICIONES ---
-    mov si, offset buffer ; Usaremos SI (Source Index) para recorrer la cadena ingresada por el usuario
-    mov cl, 0             ; CX/CL será el contador
-
-contar_bucle:
-    cmp [si], '$'    ; Buscamos el '$' (Diferencia con librería que busca 0)
-    je mostrar_resultado
-    
-    cmp [si], bl     ; Comparamos memoria vs registro
-    jne siguiente
-    
-    inc cl           ; Si coincide, sumo 1
-
-siguiente:
-    inc si
-    jmp contar_bucle
-
-    ; --- 4. MOSTRAR RESULTADO ---
-mostrar_resultado:
-    mov ah, 09h
-    mov dx, offset msg_res
-    int 21h
-
-    ; TRUCO MANUAL: Convertir número a ASCII
-    ; Esto solo funciona para resultados del 0 al 9.
-    ; Si la letra aparece 10 veces, saldrá un símbolo raro (:)
-    add cl, 30h      
-    
-    mov ah, 02h      ; Imprimir un caracter
-    mov dl, cl
-    int 21h
-
-    ; Esperar y salir
-    mov ah, 4ch
-    int 21h
-
-; --- SUBRUTINA AUXILIAR ---
-salto_linea proc
-    mov ah, 2
-    mov dl, 10
-    int 21h
-    mov dl, 13
-    int 21h
-    ret
-salto_linea endp
-
-; --- VARIABLES ---
-msg_cadena db "Ingrese cadena: $"
-msg_letra  db "Letra a buscar: $"
-msg_res    db "Cantidad: $"
-
-buffer db 50 dup(0) 
+SALTO_LINEA PROC
+  push ax
+  push dx
+  mov ah, 02h
+  mov dl, 13
+  int 21h
+  mov dl, 10
+  int 21h
+  pop dx
+  pop ax
+  ret
+SALTO_LINEA ENDP
 
 end

@@ -2,7 +2,7 @@
 ; Realizar programa Assembler 8086 que permita el ingreso de un carácter y una cadena de caracteres tipeadas 
 ; por pantalla. Al presionar ENTER deberá indicar la cantidad de coincidencias de dicho carácter en la misma. 
 
-name "contar_letras"
+name "contar caracteres con emu8086"
 org 100h
 include "emu8086.inc"
 
